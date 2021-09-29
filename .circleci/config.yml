@@ -1,15 +1,22 @@
 version: 2.1
 jobs:
- build:
-   machine: true
-   steps:
-     - checkout
-     # start proprietary DB using private Docker image
-     # with credentials stored in the UI
-     - run: echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+  build:
+    docker:
+      - image: circleci/golang:1.15
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS  # context / project UI env-var reference
+    steps:
+      - checkout
+      # ... steps for building/testing app ...
 
-     # build the application image
-     - run: docker build -t alvaroalmanza/stylesage:$CIRCLE_BRANCH -f 0-app/Dockerfile .
+      - setup_remote_docker:
+          version: 19.03.13
+          docker_layer_caching: true
 
-     # deploy the image
-     - run: docker push alvaroalmanza/stylesage:$CIRCLE_BRANCH
+      # build and push Docker image
+      - run: |
+          TAG=$CIRCLE_BUILD_NUM
+          docker build -t alvaroalmanza/django-app:$TAG -f ./0-app/Dockerfile .
+          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+          docker push alvaroalmanza/django-app:$TAG

@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 COPY ./0-app/requirements.txt ./
 RUN pip install -r requirements.txt
 #RUN pip install -r ./Pipfile
-COPY . .
+COPY ./0-app/ .
 RUN ["/bin/bash", "-c", "chmod 755 ./start.sh"]
 EXPOSE 8000
 CMD ["./start.sh"]

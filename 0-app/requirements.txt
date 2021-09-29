@@ -1,0 +1,6 @@
+psycopg2-binary
+Django
+Pillow
+django-storages
+boto3
+pipenv

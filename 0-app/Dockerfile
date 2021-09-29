@@ -6,7 +6,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
-COPY requirements.txt ./
+COPY ./0-app/requirements.txt ./
 RUN pip install -r requirements.txt
 #RUN pip install -r ./Pipfile
 COPY . .

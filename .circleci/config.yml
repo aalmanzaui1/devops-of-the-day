@@ -1,4 +1,11 @@
-version: 2
+version: 2.1
+
+workflows:
+  my-workflow:
+    jobs:
+      - build:
+          context:
+            - terraform
 jobs:
  build:
    machine: true
@@ -7,7 +14,7 @@ jobs:
      # start proprietary DB using private Docker image
      # with credentials stored in the UI
      - run: |
-         echo "$DOCKER_PASS" | docker login --username alvaroalmanza --password-stdin
+         echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
 
      # build the application image
      - run: docker build -t alvaroalmanza/django-app:$CIRCLE_BRANCH -f ./0-app/Dockerfile .

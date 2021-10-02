@@ -6,18 +6,33 @@ workflows:
       - build:
           context:
             - terraform
+      - deploy-ias:
+          context:
+            - terraform
 jobs:
- build:
-   machine: true
-   steps:
-     - checkout
-     # start proprietary DB using private Docker image
-     # with credentials stored in the UI
-     - run: |
-         echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: |
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
 
-     # build the application image
-     - run: docker build -t alvaroalmanza/django-app:$CIRCLE_BRANCH -f ./0-app/Dockerfile .
+      # build the application image
+      - run: docker build -t alvaroalmanza/django-app:$CIRCLE_BRANCH -f ./0-app/Dockerfile .
 
-     # deploy the image
-     - run: docker push alvaroalmanza/django-app:$CIRCLE_BRANCH
+      # deploy the image
+      - run: docker push alvaroalmanza/django-app:$CIRCLE_BRANCH
+  deploy-ias:
+    executor: terraform/default
+    working_directory: "~/src"
+    steps:
+      - checkout
+      - terraform/init:
+          path: "./1-IAC-Terraform"
+      - terraform/validate:
+          path: "./1-IAC-Terraform"
+      - terraform/fmt:
+          path: "."
+      - terraform/plan:
+          path: "./1-IAC-Terraform"
+          var: "deploy-name=almanza-cluster,env=dev"

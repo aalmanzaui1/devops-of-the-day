@@ -5,14 +5,14 @@ orbs:
 workflows:
   my-workflow:
     jobs:
-      - build:
+      - build-docker-app:
           context:
             - terraform
       - deploy-ias:
           context:
             - terraform
 jobs:
-  build:
+  build-docker-app:
     machine: true
     steps:
       - checkout
@@ -25,6 +25,8 @@ jobs:
       # deploy the image
       - run: docker push alvaroalmanza/django-app:$CIRCLE_BRANCH
   deploy-ias:
+    requires:
+      - build-docker-app
     executor: terraform/default
     working_directory: "~/src"
     steps:

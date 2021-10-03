@@ -37,7 +37,7 @@ jobs:
 
   deploy-ias:
     executor: terraform/default
-    working_directory: "/tmp"
+    working_directory: "~/src"
     steps:
       - checkout
       - terraform/init:
@@ -53,11 +53,11 @@ jobs:
           path: "./1-IAC-Terraform"
           var: "deploy-name=almanza-cluster,env=dev"
       - store_artifacts:
-          path: /tmp/django_deployment.yml
+          path: "~/src/django_deployment.yml"
 
   create-deployment:
     executor: aws-eks/python3
-    working_directory: "/tmp"
+    working_directory: "~/src"
     steps:
       - checkout
       - run: "curl -H \"Circle-Token: $CIRCLE_TOKEN\" https://circleci.com/api/v1.1/project/github/aalmanzaui1/devops-of-the-day/latest/artifacts"
@@ -67,4 +67,4 @@ jobs:
           aws-region: eu-west-1
       - kubernetes/create-or-update-resource:
           get-rollout-status: false
-          resource-file-path: /tmp/django_deployment.yml
+          resource-file-path: "~/src/django_deployment.yml"

@@ -8,8 +8,8 @@ resource "aws_db_subnet_group" "appRds" {
 resource "aws_db_instance" "appRds" {
   provider            = aws.region-master
   allocated_storage   = 10
-  engine              = "postgresql"
-  engine_version      = "5.7"
+  engine              = "postgres"
+  engine_version      = "13.1"
   instance_class      = "db.t3.micro"
   name                = "djangodb"
   username            = "djangouser"

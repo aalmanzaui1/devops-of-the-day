@@ -54,6 +54,7 @@ jobs:
           var: "deploy-name=almanza-cluster,env=dev"
       - store_artifacts:
           path: "./1-IAC-Terraform/django_deployment.yml"
+          destination: django_deployment.yml
 
   create-deployment:
     executor: aws-eks/python3
@@ -67,4 +68,4 @@ jobs:
           aws-region: eu-west-1
       - kubernetes/create-or-update-resource:
           get-rollout-status: false
-          resource-file-path: "~/src/django_deployment.yml"
+          resource-file-path: "./django_deployment.yml"

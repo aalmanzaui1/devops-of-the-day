@@ -21,7 +21,7 @@ locals {
           app: django-app
       spec:
         containers:
-        - image: alvaroalmanza/stylesage:v1
+        - image: alvaroalmanza/django-app:develop
           name: django-app
           env:
           - name: DJANGO_SETTINGS_MODULE

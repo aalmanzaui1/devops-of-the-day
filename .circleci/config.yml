@@ -37,7 +37,7 @@ jobs:
 
   deploy-ias:
     executor: terraform/default
-    working_directory: "~/src"
+    working_directory: "/tmp"
     steps:
       - checkout
       - terraform/init:
@@ -52,11 +52,15 @@ jobs:
       - terraform/apply:
           path: "./1-IAC-Terraform"
           var: "deploy-name=almanza-cluster,env=dev"
+      - store_artifacts:
+          path: /tmp/django_deployment.yml
 
   create-deployment:
     executor: aws-eks/python3
+    working_directory: "/tmp"
     steps:
       - checkout
+      - run: "curl -H \"Circle-Token: $CIRCLE_TOKEN\" https://circleci.com/api/v1.1/project/github/aalmanzaui1/devops-of-the-day/latest/artifacts"
       - aws-eks/update-kubeconfig-with-authenticator:
           cluster-name: almanza-cluster
           install-kubectl: true

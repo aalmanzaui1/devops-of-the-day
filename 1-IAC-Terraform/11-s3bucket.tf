@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "appBucket" {
   provider = aws.region-master
-  bucket   = "appBucketDevopsofTheDay"
+  bucket   = "django-app-almanza"
   acl      = "private"
 
   tags = {

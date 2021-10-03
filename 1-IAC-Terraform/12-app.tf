@@ -58,7 +58,7 @@ locals {
 }
 
 resource "local_file" "container1_deployment" {
-  filename   = "~/src/django_deployment.yml"
+  filename   = "django_deployment.yml"
   content    = local.app_deploy
   depends_on = [aws_eks_cluster.eks-cluster]
 }

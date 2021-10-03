@@ -62,3 +62,64 @@ resource "local_file" "container1_deployment" {
   content    = local.app_deploy
   depends_on = [aws_eks_cluster.eks-cluster]
 }
+
+/* provider "kubernetes" {
+  host                   = aws_eks_cluster.eks-cluster.endpoint
+  cluster_ca_certificate = base64decode(aws_eks_cluster.eks-cluster.certificate_authority[0].data)
+  token                  = aws_eks_cluster_auth.eks-cluster.token
+  load_config_file       = false
+}
+
+resource "kubernetes_deployment" "django-app" {
+  metadata {
+    name      = "django-app"
+  }
+  spec {
+    replicas = 2
+    selector {
+      match_labels = {
+        app = "django-app"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "django-app"
+        }
+      }
+      spec {
+        container {
+          image = "alvaroalmanza/django-app:develop"
+          name  = "django-app"
+          port {
+            container_port = 8000
+          }
+          env {
+            DJANGO_SETTINGS_MODULE = "iotd.settings"
+            RDS_DB_NAME            = "${aws_db_instance.appRds.name}"
+            RDS_USERNAME           = "${aws_db_instance.appRds.username}"
+            RDS_PASSWORD           = "${aws_db_instance.appRds.password}"
+            RDS_HOSTNAME           = "${aws_db_instance.appRds.address}"
+            RDS_PORT               = "${aws_db_instance.appRds.port}"
+            S3_BUCKET_NAME         = "${aws_s3_bucket.appBucket.bucket}"
+          }
+        }
+      }
+    }
+  }
+}
+resource "kubernetes_service" "django-app" {
+  metadata {
+    name      = "django-app"
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.django-app.spec.0.template.0.metadata.0.labels.app
+    }
+    type = "LoadBalancer"
+    port {
+      port        = 80
+      target_port = 8000
+    }
+  }
+} */

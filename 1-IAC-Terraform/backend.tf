@@ -1,8 +1,7 @@
-/*terraform {
+terraform {
   backend "s3" {
-    bucket = "almanzabucket1"
+    bucket = "devopsoftheday"
     key    = "terraform.tfstate"
-    region = "eu-west-1"
+    region = "us-east-1"
   }
 }
-*/

@@ -1,6 +1,8 @@
 version: 2.1
 orbs:
   terraform: circleci/terraform@3.0.0
+  aws-eks: circleci/aws-eks@0.2.3
+  kubernetes: circleci/kubernetes@0.4.0
 
 workflows:
   my-workflow:
@@ -13,6 +15,7 @@ workflows:
             - build-docker-app
           context:
             - terraform
+
 jobs:
   build-docker-app:
     machine: true
@@ -26,6 +29,7 @@ jobs:
 
       # deploy the image
       - run: docker push alvaroalmanza/django-app:$CIRCLE_BRANCH
+
   deploy-ias:
     executor: terraform/default
     working_directory: "~/src"
@@ -40,3 +44,17 @@ jobs:
       - terraform/plan:
           path: "./1-IAC-Terraform"
           var: "deploy-name=almanza-cluster,env=dev"
+      - terraform/apply:
+          path: "./1-IAC-Terraform"
+          var: "deploy-name=almanza-cluster,env=dev"
+
+  create-deployment:
+    executor: aws-eks/python3
+    steps:
+      - checkout
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: almanza-cluster
+          install-kubectl: true
+      - kubernetes/create-or-update-resource:
+          get-rollout-status: false
+          resource-file-path: /tmp/django_deployment.yml

@@ -53,7 +53,7 @@ jobs:
           path: "./1-IAC-Terraform"
           var: "deploy-name=almanza-cluster,env=dev"
       - store_artifacts:
-          path: "django_deployment.yml"
+          path: "./1-IAC-Terraform/django_deployment.yml"
 
   create-deployment:
     executor: aws-eks/python3

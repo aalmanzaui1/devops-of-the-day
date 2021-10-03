@@ -15,6 +15,11 @@ workflows:
             - build-docker-app
           context:
             - terraform
+      - create-deployment:
+          requires:
+            - deploy-ias
+          context:
+            - terraform
 
 jobs:
   build-docker-app:
